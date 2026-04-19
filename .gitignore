@@ -6,3 +6,4 @@ local.properties
 .gradle
 .idea
 build-logic/.kotlin
+.kotlin
