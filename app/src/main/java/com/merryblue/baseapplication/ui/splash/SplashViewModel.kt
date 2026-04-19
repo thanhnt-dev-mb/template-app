@@ -79,7 +79,6 @@ class SplashViewModel @Inject constructor(
                     } else {
                         Log.i(TAG, "init remote BannerAdmob: ${banner.id} - ${banner.tag}")
                         CoreAds.instance.initAdapterBannerAds(
-                            activity,
                             banner.id!!,
                             banner.event ?: "DummyEventBanner",
                             if (banner.size == "medium") AdSize.MEDIUM_RECTANGLE else null,
@@ -90,7 +89,6 @@ class SplashViewModel @Inject constructor(
                 } else {
                     Log.i(TAG, "init remote [first time] Banner Ads: ${banner.id} - ${banner.tag}")
                     CoreAds.instance.initAdapterBannerAds(
-                        activity,
                         banner.id!!,
                         banner.event ?: "DummyEventBanner",
                         if (banner.size == "medium") AdSize.MEDIUM_RECTANGLE else null,
@@ -121,7 +119,6 @@ class SplashViewModel @Inject constructor(
                             Log.i(TAG, "init remote Native Ads: ${native.id} - ${native.tag} - $preload")
                             existedIds.add(native.id!!)
                             CoreAds.instance.loadOrShowAdmobNativeAds(
-                                activity.applicationContext,
                                 null,
                                 native.id!!,
                                 native.event ?: "DummyEventNative",
@@ -132,7 +129,6 @@ class SplashViewModel @Inject constructor(
                         Log.i(TAG, "init remote [first time] Native Ads: ${native.id} - ${native.tag} - $preload")
                         existedIds.add(native.id!!)
                         CoreAds.instance.loadOrShowAdmobNativeAds(
-                            activity.applicationContext,
                             null,
                             native.id!!,
                             native.event ?: "DummyEventNative",
@@ -142,32 +138,5 @@ class SplashViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun hasAllPermission(context: Context): Boolean {
-        if (!Settings.canDrawOverlays(context)) return false
-
-        val appOpsManager = context.getSystemService(Context.APP_OPS_SERVICE) as? AppOpsManager
-        appOpsManager ?: return false
-
-        val mode =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                appOpsManager.unsafeCheckOpNoThrow(
-                    AppOpsManager.OPSTR_GET_USAGE_STATS,
-                    android.os.Process.myUid(),
-                    context.packageName
-                )
-            } else {
-                appOpsManager.checkOpNoThrow(
-                    AppOpsManager.OPSTR_GET_USAGE_STATS,
-                    android.os.Process.myUid(),
-                    context.packageName
-                )
-            }
-        return mode == AppOpsManager.MODE_ALLOWED
-    }
-
-    fun setShowLockScreen(needLock: Boolean = true) {
-        appRepository.setShowLock(needLock)
     }
 }

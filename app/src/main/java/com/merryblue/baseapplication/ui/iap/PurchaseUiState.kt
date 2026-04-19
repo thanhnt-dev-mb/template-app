@@ -3,7 +3,6 @@ package com.merryblue.baseapplication.ui.iap
 import android.content.Context
 import android.text.SpannableStringBuilder
 import androidx.core.content.res.ResourcesCompat
-import com.android.billingclient.api.Purchase
 import com.merryblue.baseapplication.R
 import com.merryblue.baseapplication.coredata.model.SubscriptionModel
 import com.merryblue.baseapplication.coredata.model.SubscriptionModel.BillingPeriod
@@ -41,7 +40,7 @@ data class PurchaseUiState(
         }
         val prefix = "".append(
             if (purchased == BillingPeriod.P1Y) context.getString(R.string.txt_already_yearly_premium) else context.getString(R.string.txt_premium_yearly_package),
-            if (selected == BillingPeriod.P1Y) context.getColorR(org.app.core.R.color.white) else context.getColorR(R.color.toolbarTitleColor),
+            if (selected == BillingPeriod.P1Y) context.getColorR(R.color.colorWhite) else context.getColorR(R.color.toolbarTitleColor),
             typeface
         )
 

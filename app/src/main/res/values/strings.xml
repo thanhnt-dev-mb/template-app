@@ -6,6 +6,9 @@
     <string name="txt_intro3_title">Intro 3 Title</string>
     <string name="txt_intro3_subtitle">Intro 3 Subtitle</string>
 
+    <string name="txt_notification_title"> Updated - Don\'t missed It</string>
+    <string name="txt_notification_content">New feature has been updated recently - Check it out!</string>
+
     <string name="txt_upgrade_to">Upgrade to </string>
     <string name="txt_premium">Premium</string>
     <string name="txt_offer_1">Unlock all pro features</string>

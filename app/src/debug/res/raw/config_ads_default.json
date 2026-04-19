@@ -141,6 +141,28 @@
       "status": false,
       "always_preload": false,
       "version": 1,
+      "tag": "IntroFragment_Native_0",
+      "id": "ca-app-pub-3940256099942544/2247696110",
+      "event": "EventIntroNative",
+      "style": 13,
+      "preload": 0,
+      "description": "Intro Native"
+    },
+    {
+      "status": false,
+      "always_preload": false,
+      "version": 1,
+      "tag": "IntroFragment_Native_3",
+      "id": "ca-app-pub-3940256099942544/2247696110",
+      "event": "EventIntroNative",
+      "style": 13,
+      "preload": 0,
+      "description": "Intro Native"
+    },
+    {
+      "status": false,
+      "always_preload": false,
+      "version": 1,
       "tag": "NativeFullscreenFragment_Native_DISABLE",
       "id": "ca-app-pub-3940256099942544/2247696110",
       "event": "ClickNativeFull",

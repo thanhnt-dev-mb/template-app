@@ -3,6 +3,7 @@ package com.merryblue.baseapplication.ui.onboard.intro
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.merryblue.baseapplication.BuildConfig
 import com.merryblue.baseapplication.R
 import com.merryblue.baseapplication.coredata.AppRepository
 import com.merryblue.baseapplication.coredata.model.IntroModel
@@ -10,6 +11,7 @@ import com.merryblue.baseapplication.enums.IntroPage
 import com.merryblue.baseapplication.ui.iap.BillingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.app.core.ads.remoteconfig.CoreRemoteConfig
+import org.app.core.ads.remoteconfig.config.Native
 import org.app.core.base.BaseViewModel
 import org.app.core.base.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -65,5 +67,15 @@ class IntroViewModel @Inject constructor(
         }
 
         return nativeAds == null
+    }
+
+    fun getNativeBy(tag: String) : Native? {
+        val remoteConfig = appRepository.loadAdsConfiguration() ?: return null
+
+        val nativeAds = remoteConfig.natives?.firstOrNull {
+            it.tag == tag && !it.id.isNullOrBlank() && (it.version == null || it.version!! <= BuildConfig.VERSION_CODE)
+        }
+
+        return nativeAds
     }
 }

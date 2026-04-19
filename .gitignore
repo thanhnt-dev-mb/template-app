@@ -3,3 +3,6 @@ app/src/.DS_Store
 build-logic/.gradle
 build-logic/build
 local.properties
+.gradle
+.idea
+build-logic/.kotlin

@@ -13,8 +13,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.app.core.base.BaseFragment
+import org.app.core.base.binding.setLayoutHeight
 import org.app.core.base.binding.setOnSingleClickListener
+import org.app.core.base.extensions.invisible
 import org.app.core.base.extensions.setMargins
+import org.app.core.base.utils.px
 
 @AndroidEntryPoint
 class IntroFragment : BaseFragment<FragmentIntroBinding>() {
@@ -40,12 +43,27 @@ class IntroFragment : BaseFragment<FragmentIntroBinding>() {
             pageIndex = it.getInt(ARG_PAGE_NUMBER, 0)
             binding.data = viewModel.getPageDataBy(pageIndex, context ?: return)
         }
+    }
 
-        if (pageIndex != 1 && !viewModel.isPremium()) {
-            layoutCard = binding.layoutCard
-            adsContainer = binding.adsContainer
-        } else {
-            binding.layoutCard.setMargins(0, 0, 0, 0)
+    override fun setBindingVariables() {
+        val remoteConfig = viewModel.getRemoteConfiguration()
+        if (remoteConfig != null) {
+            val tagNative = TAG + "_Native_$pageIndex"
+            val nativeAds = viewModel.getNativeBy(tagNative)
+
+            if (nativeAds == null) {
+                binding.layoutCard.setMargins(0, 0, 0, 0)
+                binding.layoutCard.invisible()
+            } else {
+                if (!viewModel.isPremium()) {
+                    layoutCard = binding.layoutCard
+                    adsContainer = binding.adsContainer
+                } else {
+                    binding.layoutCard.setLayoutHeight(84.px.toFloat())
+                    binding.layoutCard.setMargins(0, 0, 0, 0)
+                    binding.layoutCard.invisible()
+                }
+            }
         }
     }
 
