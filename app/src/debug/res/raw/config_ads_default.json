@@ -25,6 +25,16 @@
       "status": false,
       "version": 1,
       "id": "ca-app-pub-3940256099942544/6300978111",
+      "event": "ClickExample",
+      "tag": "ExampleFragment_Banner",
+      "size": "small/inline/medium",
+      "collapsible_type": "bottom",
+      "description": "Launching list app Banner"
+    },
+    {
+      "status": false,
+      "version": 1,
+      "id": "ca-app-pub-3940256099942544/6300978111",
       "event": "ClickListApp",
       "tag": "LaunchingAppListFragment_Banner",
       "size": "small",
@@ -67,6 +77,17 @@
     }
   ],
   "interstitials": [
+    {
+      "version": 1,
+      "status": true,
+      "always_preload": false,
+      "tag": "EXAMPLE_TAG",
+      "timelapse": 30000,
+      "native_id": "",
+      "id": "ca-app-pub-3940256099942544/1033173712",
+      "event": "ClickExampleTag",
+      "description": "Example Tag Inter Ads"
+    },
     {
       "status": false,
       "version": 1,
