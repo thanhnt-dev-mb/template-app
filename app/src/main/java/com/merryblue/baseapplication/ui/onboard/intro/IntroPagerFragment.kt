@@ -14,6 +14,7 @@ import com.merryblue.baseapplication.databinding.FragmentIntroPagerBinding
 import com.merryblue.baseapplication.enums.InterstitialFunction
 import com.merryblue.baseapplication.enums.IntroPage
 import com.merryblue.baseapplication.ui.home.HomeActivity
+import com.merryblue.baseapplication.ui.iap.PurchaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -60,7 +61,9 @@ class IntroPagerFragment : BaseFragment<FragmentIntroPagerBinding>() {
 
     override fun setupObservers() {
         viewModel.openHomeEvent.observe(this) {
-            showInterstitialIfNeed()
+            showInterstitialBy(InterstitialFunction.Guide.name) {
+                openHome()
+            }
         }
         
         viewModel.currentPage.observe(this) {
@@ -88,40 +91,6 @@ class IntroPagerFragment : BaseFragment<FragmentIntroPagerBinding>() {
         }
     }
 
-    private fun showInterstitialIfNeed() {
-        val rmConfig = viewModel.getRemoteConfiguration()
-        val ads = rmConfig?.interstitials?.firstOrNull {
-            it.tag == InterstitialFunction.Guide.name
-        }
-
-        if (ads?.id.isNullOrBlank()) {
-            openHome()
-            return
-        }
-        activity?.let { actv ->
-            isGoHome = false
-            CoreAds.instance.showAdapterInterstitialAds(
-                timelapse = 30000,
-                getString(StringResId.loadingAds),
-                actv,
-                ads?.id!!,
-                ads.event ?: "ClickGuideDummy",
-                object : AdsCallback() {
-                    override fun onClosed() {
-                        super.onClosed()
-                        openHome()
-                    }
-                    
-                    override fun onError(message: String?) {
-                        super.onError(message)
-                        openHome()
-                    }
-                })
-        } ?: kotlin.run {
-            openHome()
-        }
-    }
-    
     private fun openHome() {
         activity ?: return
 
@@ -129,7 +98,7 @@ class IntroPagerFragment : BaseFragment<FragmentIntroPagerBinding>() {
 
         isGoHome = true
         viewModel.setFirstTime(false)
-        openActivityAndClearStack(HomeActivity::class.java)
+        PurchaseActivity.open(requireContext())
     }
     
     inner class IntroPagerAdapter(

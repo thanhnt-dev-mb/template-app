@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.merryblue.baseapplication.R
 import com.merryblue.baseapplication.coredata.model.SubscriptionModel
 import com.merryblue.baseapplication.databinding.ActivityPurchaseBinding
+import com.merryblue.baseapplication.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ import org.app.core.base.binding.setOnSingleClickListener
 import org.app.core.base.extensions.disable
 import org.app.core.base.extensions.enable
 import org.app.core.base.extensions.hide
+import org.app.core.base.extensions.openActivityAndClearStack
 import org.app.core.base.extensions.showMessage
 import timber.log.Timber
 
@@ -43,12 +45,16 @@ class PurchaseActivity : BaseActivity<ActivityPurchaseBinding>() {
     }
 
     override fun setUpViews() {
-        hideNavigationBar(binding.main)
+        enableEdgeToEdge(binding.main, true)
 
         _from = intent.extras?.getString(KEY_FROM) ?: ""
 
         binding.closeBtn.setOnSingleClickListener {
-            finish()
+            if (_from == "onboard") {
+                openActivityAndClearStack(HomeActivity::class.java)
+            } else {
+                finish()
+            }
         }
         binding.upgradeBtn.setOnSingleClickListener {
             _needRefresh = viewModel.onPurchase(this)
@@ -64,7 +70,11 @@ class PurchaseActivity : BaseActivity<ActivityPurchaseBinding>() {
             Handler(Looper.getMainLooper()).postDelayed({
                 viewModel.getPurchasedProducts()?.let {
                     CoreAds.instance.logFirebaseEvent("IAPSuccess_$_from")
-                    finish()
+                    if (_from == "onboard") {
+                        openActivityAndClearStack(HomeActivity::class.java)
+                    } else {
+                        finish()
+                    }
                 } ?: kotlin.run {
                     CoreAds.instance.logFirebaseEvent("IAPFailed_$_from")
                     Timber.tag("IAP_TAG").i("onResume not finish --> Why???")
@@ -79,7 +89,11 @@ class PurchaseActivity : BaseActivity<ActivityPurchaseBinding>() {
                 if (items.isEmpty()) {
                     showMessage(getString(R.string.txt_timeout_billing_load))
                     hideProgressDialog()
-                    finish()
+                    if (_from == "onboard") {
+                        openActivityAndClearStack(HomeActivity::class.java)
+                    } else {
+                        finish()
+                    }
                 }
             } catch (e: Exception) { e.printStackTrace() }
         }, 10000)

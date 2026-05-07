@@ -38,6 +38,7 @@ class AppRepository @Inject constructor(
     private var _showLock = false
     private var _onboardedLanguage = false
     private var _lockedCount = 0
+    private var _functionUsageCount = 0
 
     var isStartSession =  true
 
@@ -121,48 +122,38 @@ class AppRepository @Inject constructor(
     
     fun createFile(fileName: String, relativePath: String? = null) : String {
         val defaultPath = defaultImageFolder(relativePath?.split("/")?.lastOrNull())
-        if (isSdkHigherThan28()) {
-            var cursor: Cursor? = null
-            try {
-                val newImageDetails = ContentValues().apply {
-                    if (isSdkHigherThan28()) {
-                        put(MediaStore.Images.Media.IS_PENDING, 1)
-                    }
-                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                    relativePath?.let {
-                        put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
-                    }
+        var cursor: Cursor? = null
+        try {
+            val newImageDetails = ContentValues().apply {
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                relativePath?.let {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, relativePath)
                 }
-                val imageUri = if (isSdkHigherThan28()) {
-                    MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-                } else {
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                }
-                _editingUri = context.contentResolver.insert(imageUri, newImageDetails)
-                val outputStream = context.contentResolver.openOutputStream(_editingUri ?: return defaultPath)
-                outputStream?.close()
-                
-                cursor = context.contentResolver.query(
-                    _editingUri ?: return defaultPath,
-                    arrayOf(MediaStore.Images.Media.DATA),
-                    null,
-                    null,
-                    null
-                )
-                val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA) ?: return defaultPath
-                cursor.moveToFirst()
-                
-                return cursor.getStringOrNull(columnIndex) ?: defaultPath
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-            } finally {
-                cursor?.close()
             }
-            
-            return defaultPath
-        } else {
-            return defaultPath
+            val imageUri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            _editingUri = context.contentResolver.insert(imageUri, newImageDetails)
+            val outputStream = context.contentResolver.openOutputStream(_editingUri ?: return defaultPath)
+            outputStream?.close()
+
+            cursor = context.contentResolver.query(
+                _editingUri ?: return defaultPath,
+                arrayOf(MediaStore.Images.Media.DATA),
+                null,
+                null,
+                null
+            )
+            val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA) ?: return defaultPath
+            cursor.moveToFirst()
+
+            return cursor.getStringOrNull(columnIndex) ?: defaultPath
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        } finally {
+            cursor?.close()
         }
+
+        return defaultPath
     }
     
     private fun defaultImageFolder(pFolder: String? = null) : String {
@@ -189,12 +180,10 @@ class AppRepository @Inject constructor(
     }
     
     private fun notifyThatFileIsNowPubliclyAvailable() {
-        if (isSdkHigherThan28()) {
-            _editingUri?.let { uri ->
-                val contentValues = ContentValues()
-                contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-                context.contentResolver.update(uri, contentValues, null, null)
-            }
+        _editingUri?.let { uri ->
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+            context.contentResolver.update(uri, contentValues, null, null)
         }
     }
     
@@ -283,9 +272,17 @@ class AppRepository @Inject constructor(
         }
     }
 
-    companion object {
-        fun isSdkHigherThan28(): Boolean {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    fun increateFunctionUsageCount() {
+        _functionUsageCount++
+    }
+
+    fun shouldShowIAP() : Boolean {
+        val ret = ((_functionUsageCount % 5 == 0) && _functionUsageCount > 0)
+
+        if (ret) {
+            _functionUsageCount = 0
         }
+
+        return ret
     }
 }
