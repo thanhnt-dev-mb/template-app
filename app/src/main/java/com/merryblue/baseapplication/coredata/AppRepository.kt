@@ -12,6 +12,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import com.google.gson.Gson
+import com.merryblue.baseapplication.BuildConfig
 import com.merryblue.baseapplication.coredata.local.AppPreferences
 import com.merryblue.baseapplication.coredata.model.LanguageModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -23,6 +24,7 @@ import org.app.core.ads.openads.AdapterOpenAppManager
 import org.app.core.ads.remoteconfig.CoreRemoteConfig
 import org.app.core.ads.remoteconfig.config.AdsConfigure
 import org.app.core.base.extensions.coroutinesIO
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -235,19 +237,21 @@ class AppRepository @Inject constructor(
     
     fun loadAdsConfiguration() : AdsConfigure? {
         val rmConfig = CoreRemoteConfig.instance.adsRemoteConfig
-        if (rmConfig?.active_version != null) {
-            return rmConfig
-        } else {
-            try {
-                val jsonConfig = getJsonAdsConfigure()
-                val localConfig = Gson().fromJson(jsonConfig, AdsConfigure::class.java)
-
-                return localConfig
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+        return if (rmConfig != null) {
+            val version = rmConfig.active_version ?: 0
+            val status = rmConfig.status ?: false
+            Timber.tag("ADS-CONFIG").i("loadAdsConfiguration: ---> $version - $status - ${BuildConfig.VERSION_CODE}")
+            if (status) {
+                if (version >= BuildConfig.VERSION_CODE) {
+                    rmConfig
+                } else {
+                    loadLocalAdsConfiguration()
+                }
+            } else {
+                null
             }
-
-            return null
+        } else {
+            loadLocalAdsConfiguration()
         }
     }
 
@@ -270,6 +274,20 @@ class AppRepository @Inject constructor(
             e.printStackTrace()
             return ""
         }
+    }
+
+    private fun loadLocalAdsConfiguration() : AdsConfigure? {
+        try {
+            Timber.tag("ADS-CONFIG").i("loadLocalAdsConfiguration: --->")
+            val jsonConfig = getJsonAdsConfigure()
+            val localConfig = Gson().fromJson(jsonConfig, AdsConfigure::class.java)
+
+            return localConfig
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 
     fun increateFunctionUsageCount() {

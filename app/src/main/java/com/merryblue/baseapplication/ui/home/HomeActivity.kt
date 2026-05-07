@@ -56,7 +56,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>() {
     override fun onResume() {
         super.onResume()
 
-//        handleForceUpdateIfNeed()
+        handleForceUpdateIfNeed()
         isFirstVisible = false
         isActive = true
     }

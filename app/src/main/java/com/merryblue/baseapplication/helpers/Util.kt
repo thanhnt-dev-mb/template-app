@@ -36,6 +36,7 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.google.android.material.snackbar.Snackbar
 import com.merryblue.baseapplication.R
+import org.app.core.ads.remoteconfig.CoreRemoteConfig
 import org.app.core.base.utils.StringResId
 import java.io.File
 import java.io.FileOutputStream
@@ -412,7 +413,8 @@ fun TextView.setDrawableTint(color: Int) {
 
 fun Context.openPolicy() {
     try {
-        val intent = Intent(Intent.ACTION_VIEW, "https://dj-mixer.merryblue.llc/privacy.html".toUri())
+        val url = CoreRemoteConfig.instance.getPolicyLink().ifBlank { "https://merryblue.llc/policy" }
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     } catch (e: Exception) {
