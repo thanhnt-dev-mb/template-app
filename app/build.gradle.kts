@@ -53,6 +53,7 @@ android {
     buildTypes {
         debug {
             manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+            buildConfigField("boolean", "IAP_ENABLED", "false")
         }
 
         release {
@@ -63,6 +64,7 @@ android {
                 "proguard-rules.pro"
             )
             manifestPlaceholders["admobAppId"] = "ca-app-pub-6445739239297382~1968340520"
+            buildConfigField("boolean", "IAP_ENABLED", "false")
         }
     }
 

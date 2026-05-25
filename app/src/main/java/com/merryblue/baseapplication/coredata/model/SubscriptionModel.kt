@@ -58,5 +58,29 @@ data class SubscriptionModel(
                 hasTrial,
             )
         }
+
+        fun dummies() : List<SubscriptionModel> {
+            return listOf(
+                SubscriptionModel(
+                    "monthly",
+                    "Monthly",
+                    "129.000₫",
+                    "VND",
+                    129000000000,
+                    BillingPeriod.P1M,
+                    false,
+                ),
+                SubscriptionModel(
+                    "yearly",
+                    "Yearly",
+                    "311.000₫",
+                    "VND",
+                    311000000000,
+                    BillingPeriod.P1Y,
+                    true,
+                )
+            )
+        }
+
     }
 }

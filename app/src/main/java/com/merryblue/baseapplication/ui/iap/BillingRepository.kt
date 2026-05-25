@@ -15,6 +15,7 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchasesAsync
+import com.merryblue.baseapplication.BuildConfig
 import com.merryblue.baseapplication.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -55,14 +56,21 @@ class BillingRepository @Inject constructor(
     private var _isConnected: Boolean = false
 
     fun initialize() {
-        val cachedPurchase = preference.getBoolean(PREFERENCE_KEY_IS_PURCHASED, false)
-        Timber.tag(TAG).i("init billing client: $cachedPurchase")
-        if (cachedPurchase) {
+        if (BuildConfig.IAP_ENABLED) {
+            val cachedPurchase = preference.getBoolean(PREFERENCE_KEY_IS_PURCHASED, false)
+            Timber.tag(TAG).i("init billing client: $cachedPurchase")
+            if (cachedPurchase) {
+                CoreAds.instance.setHideAds(true)
+            }
             CoreAds.instance.setHideAds(true)
+            return
+            setupBillingClient()
+        } else {
+            _initialized = true
+            _initializing = false
+            CoreAds.instance.setHideAds(false)
+            _subscriptions.addAll(SubscriptionModel.dummies())
         }
-        CoreAds.instance.setHideAds(true)
-        return
-        setupBillingClient()
     }
 
     fun refreshIfNeed() {
