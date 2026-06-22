@@ -28,6 +28,9 @@ class IntroFragment : BaseFragment<FragmentIntroBinding>() {
     override
     fun getLayoutId() = R.layout.fragment_intro
 
+    override val nativeHeight: Int
+        get() = -1
+
     override fun initView(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -46,22 +49,21 @@ class IntroFragment : BaseFragment<FragmentIntroBinding>() {
     }
 
     override fun setBindingVariables() {
-        val remoteConfig = viewModel.getRemoteConfiguration()
-        if (remoteConfig != null) {
-            val tagNative = TAG + "_Native_$pageIndex"
-            val nativeAds = viewModel.getNativeBy(tagNative)
+        if (viewModel.isPremium()) {
+            binding.layoutCard.setMargins(0, 0, 0, 0)
+            binding.layoutCard.invisible()
+        } else {
+            val remoteConfig = viewModel.getRemoteConfiguration()
+            if (remoteConfig != null) {
+                val tagNative = TAG + "_Native_$pageIndex"
+                val nativeAds = viewModel.getNativeBy(tagNative)
 
-            if (nativeAds == null) {
-                binding.layoutCard.setMargins(0, 0, 0, 0)
-                binding.layoutCard.invisible()
-            } else {
-                if (!viewModel.isPremium()) {
-                    layoutCard = binding.layoutCard
-                    adsContainer = binding.adsContainer
-                } else {
-                    binding.layoutCard.setLayoutHeight(84.px.toFloat())
+                if (nativeAds == null) {
                     binding.layoutCard.setMargins(0, 0, 0, 0)
                     binding.layoutCard.invisible()
+                } else {
+                    layoutCard = binding.layoutCard
+                    adsContainer = binding.adsContainer
                 }
             }
         }

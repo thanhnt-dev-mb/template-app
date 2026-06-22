@@ -143,6 +143,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         if (isInitializeCalled.getAndSet(true)) {
             return
         }
+        val openAppId = CoreRemoteConfig.instance.findAppOpenId() ?: ""
+        AdapterOpenAppManager.instance.setOpenAdsId(openAppId)
         AdapterOpenAppManager.instance.preloadAds()
 
         val remoteConfig = viewModel.getRemoteConfiguration()

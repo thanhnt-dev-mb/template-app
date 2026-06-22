@@ -62,8 +62,6 @@ class BillingRepository @Inject constructor(
             if (cachedPurchase) {
                 CoreAds.instance.setHideAds(true)
             }
-            CoreAds.instance.setHideAds(true)
-            return
             setupBillingClient()
         } else {
             _initialized = true
