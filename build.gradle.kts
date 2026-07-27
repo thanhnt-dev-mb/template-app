@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
 
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
-    id("com.google.devtools.ksp") version "2.0.21-1.0.27" apply false
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
 }
 
 //TODO: AppLovin
@@ -29,12 +29,7 @@ buildscript {
 
         //noinspection GradleDynamicVersion
 //        classpath ("com.applovin.quality:AppLovinQualityServiceGradlePlugin:+")
-        classpath(
-            kotlin(
-                "gradle-plugin",
-                version = "1.9.21"
-            )
-        )  //TODO: Need check for upgrading version to -> kotlin = "2.0.21"
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21")
     }
 }
 
