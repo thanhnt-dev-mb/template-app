@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.AppTheme.AppBarOverlay" parent="Theme.MaterialComponents.NoActionBar" >
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:iconTint">@color/toolbarTitleColor</item>
@@ -18,5 +18,11 @@
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Title</item>
         <item name="homeAsUpIndicator">@drawable/ic_back</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
+    </style>
+
+    <style name="Theme.AdMob.Fullscreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

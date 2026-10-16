@@ -46,12 +46,12 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding>() {
 
         binding.viewModel = viewModel
 
-        if (viewModel.isFirstTime() && !viewModel.onboardedLanguage && !viewModel.isPremium()) {
-            adsContainer = binding.adsContainer
-            layoutCard = binding.layoutCard
-        } else {
-            binding.layoutCard.hide()
-        }
+//        if (viewModel.isFirstTime() && !viewModel.onboardedLanguage && !viewModel.isPremium()) {
+//            adsContainer = binding.adsContainer
+//            layoutCard = binding.layoutCard
+//        } else {
+//            binding.layoutCard.hide()
+//        }
 
         supportActionBar?.hide()
         AdapterOpenAppManager.instance.registerDisableOpenAdsAt(LanguageActivity::class.java)

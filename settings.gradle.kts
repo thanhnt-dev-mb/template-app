@@ -30,5 +30,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AI-Translate"
+rootProject.name = "Template-App"
 include(":app")

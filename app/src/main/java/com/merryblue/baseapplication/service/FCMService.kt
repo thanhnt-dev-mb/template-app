@@ -41,7 +41,7 @@ class FCMService : FirebaseMessagingService() {
         val wakelock = powerManager?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "mbapp:scheduled.notification.receiver")
         wakelock?.acquire(3000)
 
-        val title = this@FCMService.getString(R.string.app_name) + getString(R.string.txt_notification_title)
+        val title = getString(R.string.txt_notification_title)
         val content = getString(R.string.txt_notification_content)
         val appName = getString(R.string.app_name)
 
